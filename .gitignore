@@ -1,0 +1,19 @@
+﻿
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# 密钥（绝不上传）
+app/secret.py
+
+# 数据库（含你的答题历史/路线/材料，绝不上传）
+*.db
+*.sqlite
+*.sqlite3
+app/quiz_history.db
+app/materials/
+
+# IDE
+.vscode/
+.idea/
