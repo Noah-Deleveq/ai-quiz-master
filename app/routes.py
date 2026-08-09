@@ -203,6 +203,13 @@ def get_history():
     return {"items": history.list_sessions()}
 
 
+@router.delete("/history/by-topic/{topic}")
+def delete_history_topic(topic: str):
+    """删除某主题的全部答题会话（学习统计主题清零）"""
+    history.delete_topic(topic)
+    return {"ok": True}
+
+
 @router.get("/history/{hid}")
 def get_history_detail(hid: int):
     item = history.get_session(hid)

@@ -111,3 +111,11 @@ def delete_session(hid: int):
     conn.commit()
     conn.close()
 
+
+def delete_topic(topic: str):
+    """删除某一主题的全部答题会话（学习统计里的主题清零）"""
+    conn = _conn()
+    conn.execute("DELETE FROM quiz_sessions WHERE topic=?", (topic,))
+    conn.commit()
+    conn.close()
+

@@ -859,7 +859,8 @@ function statsHtml(s) {
         const pct = t.total ? Math.round(t.correct / t.total * 100) : 0;
         return '<div class="t-row"><span class="n">' + esc(t.topic) + '</span>'
           + '<div class="bar2"><i style="width:' + pct + '%;background:' + (pct >= 80 ? 'linear-gradient(90deg,#059669,#10b981)' : pct >= 50 ? 'linear-gradient(90deg,#0ea5e9,#6366f1)' : 'linear-gradient(90deg,#f59e0b,#dc2626)') + '"></i></div>'
-          + '<span class="pct">' + t.correct + '/' + t.total + ' · ' + pct + '%</span></div>';
+          + '<span class="pct">' + t.correct + '/' + t.total + ' · ' + pct + '%</span>'
+          + '<button class="mini-btn del" data-topic="' + esc(t.topic) + '" title="删除该主题的全部记录" onclick="delTopic(this)">🗑</button></div>';
       }).join('') + '</div>';
   } else {
     html += '<div class="hint">还没有答题记录，先来一组吧</div>';
@@ -971,6 +972,18 @@ async function delHistory(id) {
   if (!confirm('确定删除这条记录吗？')) return;
   await api('/history/' + id, 'DELETE');
   loadHistory(); loadStats();
+}
+
+async function delTopic(btn) {
+  const topic = btn.dataset.topic;
+  if (!confirm('删除主题「' + topic + '」的全部答题记录吗？\n学习统计中该主题将清零。')) return;
+  try {
+    await api('/history/by-topic/' + encodeURIComponent(topic), 'DELETE');
+    toast('已删除「' + topic + '」的全部记录');
+    loadStats(); loadHistory();
+  } catch (e) {
+    alert('删除失败：' + e.message);
+  }
 }
 
 const QUOTES = [
