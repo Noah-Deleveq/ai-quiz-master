@@ -108,6 +108,8 @@
   .chip { display: inline-block; padding: 5px 12px; margin: 4px 4px 0 0; border: 1px solid #e5e7eb; border-radius: 20px; font-size: 12px; color: #374151; background: #fafafa; cursor: pointer; transition: all .12s; user-select: none; }
   .chip:hover { border-color: #6366f1; color: #6366f1; background: #eef2ff; }
   .chip-recent { border-color: #a7f3d0; background: #ecfdf5; color: #047857; }
+  .recent-x { display:inline-block; margin-left:5px; color:#6ee7b7; cursor:pointer; font-size:12px; padding:0 2px; border-radius:4px; }
+  .recent-x:hover { color:#dc2626; background:#fef2f2; }
   .chip-recent:hover { border-color: #10b981; background: #d1fae5; color: #047857; }
   .chip:active { transform: scale(.95); }
   .cat-chip { display: inline-block; padding: 6px 12px; margin: 4px 6px 4px 0; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 13px; color: #374151; background: #f8f9fc; cursor: pointer; transition: all .12s; user-select: none; }
@@ -468,6 +470,11 @@ function recordRecentTopic(t) {
   arr.unshift(t);
   try { localStorage.setItem(RECENT_KEY, JSON.stringify(arr.slice(0, 6))); } catch (e) { }
 }
+function delRecentTopic(t) {
+  const arr = getRecentTopics().filter(x => x !== t);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(arr));
+  renderTopics();
+}
 const EXPANDED_KEY = 'quizExpandedTopics';
 function getExpanded() { try { return JSON.parse(localStorage.getItem(EXPANDED_KEY) || '[]'); } catch (e) { return []; } }
 function saveExpanded(a) { try { localStorage.setItem(EXPANDED_KEY, JSON.stringify(a)); } catch (e) { } }
@@ -496,7 +503,7 @@ function renderTopics() {
   const recent = getRecentTopics();
   if (recent.length) {
     html += '<div style="margin-top:10px;"><span style="font-size:12px;color:#6b7280;">🕘 最近：</span>'
-      + recent.map(t => '<span class="chip chip-recent" onclick="clickTopic(\'' + String(t).replace(/'/g, "\\'") + '\')">🕘 ' + t + '</span>').join('')
+      + recent.map(t => '<span class="chip chip-recent" onclick="clickTopic(\'' + String(t).replace(/'/g, "\\'") + '\')">🕘 ' + t + '<span class="recent-x" title="删除" onclick="event.stopPropagation();delRecentTopic(\'' + String(t).replace(/'/g, "\\'") + '\')">✕</span></span>').join('')
       + '</div>';
   }
   if (kw) {
